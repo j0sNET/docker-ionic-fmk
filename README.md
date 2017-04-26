@@ -1,6 +1,6 @@
 ![Ionic](http://ionicframework.com/img/ionic-logo.png)
 
-[![Docker Hub](https://img.shields.io/badge/Docker-josnet%2Fionic__fwk-blue.svg)](https://registry.hub.docker.com/u/josnet/ionic-fmk/)
+[![Docker Hub](https://img.shields.io/badge/Docker-josnet%2Fionic__fwk-blue.svg)](https://hub.docker.com/r/josnet/ionic_fwk)
 
 This repository contains the **Dockerfile** which is ready-to-go hybrid development environment for building amazing mobile apps with [Ionic framework](http://ionicframework.com) on [Docker](https://www.docker.com/).
 
@@ -15,7 +15,7 @@ This image is using the following tools:
 
 Requirements
 ---------------------
-[![docker](https://www.docker.com/sites/default/files/dockertwo_0.png){:height="199px" width="430px"}](https://www.docker.com/)
+[![docker](https://www.docker.com/sites/default/files/dockertwo_0.png)](https://www.docker.com/)
 
 
 How to use it?
@@ -57,13 +57,13 @@ You can follow the [Ionic tutorial](http://ionicframework.com/getting-started/) 
 
 Start building high-quality mobile apps:
 
-##### Manual
+##### Manually
 
 ```bash
 $ cd <workspace_path>/
 $ docker run -it --name ionic-dev -h ionic-dev \
     -p 8100:8100 -p 35729:35729 \
-    -v $(pwd):/projects/ionic:rw josnet/ionic_fwk /bin/bash
+    -v $(pwd):/projects:rw josnet/ionic_fwk /bin/bash
 
 $ ionic start mySuperApp blank --v2 --ts
 $ cd mySuperApp

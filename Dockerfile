@@ -17,11 +17,6 @@ RUN groupadd -r -o --gid 1000 ionic \
 
 RUN echo 'ionic ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN mkdir -p /projects/ionic \
-	&& chown -R ionic:ionic /projects/ionic
-
-#VOLUME /projects
-
 # =========================================================================== #
 # Environment variables
 # =========================================================================== #
@@ -53,11 +48,18 @@ ENV ANDROID_4_0_COMPONENTS android-15,build-tools-19.1.0
 ENV GOOGLE_EXTRAS_COMPONENTS extra-android-support,extra-android-m2repository,extra-google-m2repository,extra-google-google_play_services
 ENV GOOGLE_APIS_COMPONENTS addon-google_apis-google-22
 
+ENV WORKSPACE=/workspace/app
+ENV PROJECTS=/projects
+ENV IONIC_SERVE_PORT=8100
+ENV	IONIC_LIVERELOAD_PORT=35729
+
 RUN echo ANDROID_HOME="${ANDROID_HOME}" >> /etc/environment
 
 RUN dpkg-reconfigure debconf -f noninteractive
 
 ENV PATH $PATH:$ANDROID_HOME/tools:$ANDROID_HOME/platform-tools:$ANDROID_HOME/build-tools/$ANDROID_BUILD_TOOLS_VERSION:$ANT_HOME/bin:$MAVEN_HOME/bin:$GRADLE_HOME/bin
+
+VOLUME ${PROJECTS}
 
 # =========================================================================== #
 # Pre-install
@@ -76,9 +78,6 @@ RUN \
 	lib32gcc1 \
 	lib32ncurses5 \
 	lib32z1
-
-RUN mkdir workspace \
-	&& chown -R ionic:ionic /workspace
 
 # =========================================================================== #
 # Install
@@ -162,14 +161,15 @@ RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
 # -----------------------------------------------------------------------------
 # Demo ionic
 # -----------------------------------------------------------------------------
-RUN echo n | ionic start workspace/app sidemenu --v2 --ts
+RUN echo n | ionic start ${WORKSPACE} sidemenu --v2 --ts
 
-# Set the working directory to app home directory
-WORKDIR workspace/app
+# Set the working directory to app workspace directory
+WORKDIR ${WORKSPACE}
 
-EXPOSE 8100 35729
+# Expose port: web (8100), livereload (35729)
+EXPOSE ${IONIC_SERVE_PORT} ${IONIC_LIVERELOAD_PORT}
 
 # Specify the user to execute all commands below
 #USER ionic
 
-CMD ["ionic", "serve", "--all", "--port", "8100", "--livereload-port", "35729"]
+CMD ["ionic", "serve", "--all", "--port", "${IONIC_SERVE_PORT}", "--livereload-port", "${IONIC_LIVERELOAD_PORT}"]
